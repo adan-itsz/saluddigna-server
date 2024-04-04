@@ -37,7 +37,7 @@ export async function newMedicalTest(dataForm,datos,db, admin) {
 
     if (querySnapshot.empty) {
       console.log('No se encontraron documentos con ese orderNumber.');
-      return null;
+      return 505;
     }
 
     querySnapshot.forEach(doc => {
