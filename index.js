@@ -5,10 +5,13 @@ import cors from "cors";
 import admin from "firebase-admin";
 import dotenv from "dotenv";
 import multer from 'multer';
+import path from 'path';
+
 dotenv.config({ path: `.env.${process.env.NODE_ENV}` });
 
 import { sendMessageTest, sendOrderInProgressMessage } from "./services/whatsapp/messages.js";
-
+import {dicomToJpg} from "./services/utils/dicomToImageAndInfo.js"
+import{newMedicalTest, findMedicalTest} from './services/medicalTest/Medicaltest.js'
 admin.initializeApp({
   credential: admin.credential.cert(`./${process.env.ADMIN_FIREBASE_JSON}`),
   apiKey: process.env.FIREBASE_API_KEY,
@@ -20,12 +23,12 @@ admin.initializeApp({
   appId: process.env.APP_ID,
   measurementId: process.env.MEASUREMENT_ID
 });
+const bucket = admin.storage().bucket();
 
 var dataBase = admin.database();
 var dataBaseFire = admin.firestore();
 var Auth = admin.auth();
 admin.messaging();
-const bucket = admin.storage().bucket();
 
 app.use(cors());
 app.use(
@@ -59,11 +62,14 @@ app.use(function (req, res, next) {
 });
 
 const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'uploads/') // Asegúrate de que este directorio exista
+  destination: function(req, file, cb) {
+    cb(null, 'uploads/'); // Asegúrate de que esta carpeta exista
   },
-  filename: function (req, file, cb) {
-    cb(null, file.fieldname + '-' + Date.now())
+  filename: function(req, file, cb) {
+    // Puedes usar Date.now() para nombres únicos o mantener el nombre original con file.originalname
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
+
   }
 });
 
@@ -82,11 +88,22 @@ app.post("/new-medical-test", function(req, res){
 
 })
 
-app.post('/upload-dicom', upload.single('dicomFile'), (req, res) => {
-  console.log('Archivo DICOM recibido:', req.file);
-  res.send('Archivo DICOM cargado con éxito');
+app.post('/upload-dicom', upload.single('dicomFile'), async (req, res) => {
+  if (req.file) {
+    const dataDiacom=await dicomToJpg(req.file.path,'/finish', bucket);
+    const dataFormulario=req.body;
+    const uploadataBase= await newMedicalTest(dataFormulario,dataDiacom,dataBaseFire,admin)
+    res.send('Archivo DICOM cargado con éxito');
+  } else {
+    res.status(400).send('No se cargó ningún archivo.');
+  }
 });
 
+app.post("/response-whats", function(req, res){
+  const data=req.query;
+  const responseWhats= findMedicalTest(data, dataBaseFire,admin);
+  res.send(responseWhats);
+})
 
 
 
