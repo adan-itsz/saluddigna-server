@@ -15,12 +15,12 @@ export async function dicomToJpg(dicomFilePath, jpgFilePath,bucket) {
     const pixelDataElement = dataSet.elements.x7fe00010;
     const samplesPerPixel = dataSet.uint16('x00280002')
     const pixelData = new Uint8Array(dicomData.buffer, pixelDataElement.dataOffset, pixelDataElement.length);
-    const manufacturer = dataSet.string('x00080070')
-    const institution = dataSet.string('x00080080')
-    const station = dataSet.string('x00081010')
+    const manufacturer =dataSet.string('x00080070')|| false
+    const institution = dataSet.string('x00080080')|| false|| false
+    const station = dataSet.string('x00081010')|| false
     const patient = dataSet.string('x00100010')
-    const patientBirthDate = dataSet.string('x00100030')
-    const patientGender = dataSet.string('x00100040')
+    const patientBirthDate = dataSet.string('x00100030')|| false
+    const patientGender = dataSet.string('x00100040')|| false
 
     console.log('samples per pixel: ', typeof samplesPerPixel)
     //if(isNaN(numberOfFrames) || )
@@ -45,7 +45,7 @@ export async function dicomToJpg(dicomFilePath, jpgFilePath,bucket) {
 
       console.log(`La conversión de ${dicomFilePath} a ${jpgFilePath} fue exitosa.`);
       const publicUrl=await uploadJpgToFirebaseStorage(outputPath,pathImageFirebase+prePath,bucket);
-      const dataDicom= await {institution,station,patient,patientBirthDate,patientGender,medicalTest:{publicUrl}}
+      const dataDicom= await {station,patient,patientBirthDate,patientGender,medicalTest:{publicUrl}}
 
       return await dataDicom;
     }
