@@ -100,7 +100,7 @@ app.post('/upload-dicom', upload.single('dicomFile'), async (req, res) => {
 });
 
 app.post("/response-whats", function(req, res){
-  const data=req.query;
+  const data=req.query;git 
   const responseWhats= findMedicalTest(data, dataBaseFire,admin);
   res.send(responseWhats);
 })
