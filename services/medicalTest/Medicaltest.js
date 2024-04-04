@@ -51,7 +51,7 @@ export async function newMedicalTest(dataForm,datos,db, admin) {
 
     }catch(err){
       console.log(err)
-      console.log("error findMedicalTest => ", error);
+      console.log("error findMedicalTest => ", err);
       return({ status: "505", errorMessage: error });
     }
   }

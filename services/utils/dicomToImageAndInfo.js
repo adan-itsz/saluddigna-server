@@ -31,7 +31,7 @@ export async function dicomToJpg(dicomFilePath, jpgFilePath,bucket) {
 
       console.log('samples per pixel: ', samplesPerPixel)
       // Convertir el pixelData a imagen JPG usando sharp
-      const prePath=`ultrasonido${Date.now() + i}.jpg`;
+      const prePath=`ultrasonido${Date.now() + i}.jpeg`;
       const outputPath = `.${jpgFilePath}/${prePath}`;
       await sharp(Buffer.from(pixelData), {
         raw: {
@@ -46,6 +46,7 @@ export async function dicomToJpg(dicomFilePath, jpgFilePath,bucket) {
       console.log(`La conversión de ${dicomFilePath} a ${jpgFilePath} fue exitosa.`);
       const publicUrl=await uploadJpgToFirebaseStorage(outputPath,pathImageFirebase+prePath,bucket);
       const dataDicom= await {institution,station,patient,patientBirthDate,patientGender,medicalTest:{publicUrl}}
+
       return await dataDicom;
     }
  
