@@ -29,10 +29,10 @@ export async function newMedicalTest(dataForm,datos,db, admin) {
     }
   }
 
-  export async function findMedicalTest(orderNumber,db){
+  export async function findMedicalTest(data,db){
     try{
       const querySnapshot = await db.collection('medicalTest') // Reemplaza 'tuColeccion' con el nombre real de tu colección
-      .where('orderNumber', '==', orderNumber)
+      .where('orderNumber', '==', data.orderNumber)
       .get();
 
     if (querySnapshot.empty) {
