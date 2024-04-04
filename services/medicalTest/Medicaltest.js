@@ -27,7 +27,7 @@ export async function newMedicalTest(dataForm,datos,db, admin) {
       const querySnapshot = await db.collection('medicalTest') // Reemplaza 'tuColeccion' con el nombre real de tu colección
       const stringWOFolio = data.orderNumber.replace("Folio ", "")
 
-      .where('orderNumber', '==', stringWOFolior)
+      .where('orderNumber', '==', stringWOFolio)
       .get();
 
     if (querySnapshot.empty) {
@@ -47,6 +47,6 @@ export async function newMedicalTest(dataForm,datos,db, admin) {
     }catch(err){
       console.log(err)
       console.log("error findMedicalTest => ", err);
-      return({ status: "505", errorMessage: error });
+      return({ status: "505", errorMessage: err });
     }
   }
