@@ -80,6 +80,10 @@ app.get("/x", function (req, res) {
   sendOrderInProgressMessage('Roberto', '+523317478004','dsfd','Omaka')
   res.send("Que pasa perro? ___ooO_(_o__o_)_Ooo___");
 });
+app.get("/x", function (req, res) {
+  sendOrderInProgressMessage('Roberto', '+523317478004','dsfd','Omaka')
+  res.send("Que pasa perro? ___ooO_(_o__o_)_Ooo___");
+});
 
 app.post("/new-medical-test", function(req, res){
   const data=req.body;
@@ -100,7 +104,7 @@ app.post('/upload-dicom', upload.single('dicomFile'), async (req, res) => {
 });
 
 app.post("/response-whats", function(req, res){
-  const data=req.query;git 
+  const data=req.query; 
   const responseWhats= findMedicalTest(data, dataBaseFire,admin);
   res.send(responseWhats);
 })
