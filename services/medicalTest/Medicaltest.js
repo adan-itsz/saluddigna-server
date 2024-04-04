@@ -26,7 +26,7 @@ export async function newMedicalTest(dataForm,datos,db, admin) {
     try{
       const querySnapshot = await db.collection('medicalTest') // Reemplaza 'tuColeccion' con el nombre real de tu colección
       console.log('dataaaaa------>',data)
-      const stringWOFolio = data.orderNumber.replace("Folio ", "")
+      const stringWOFolio =await data.orderNumber.replace("Folio ", "")
       console.log(stringWOFolio)
       .where('orderNumber', '==', stringWOFolio)
       .get();
