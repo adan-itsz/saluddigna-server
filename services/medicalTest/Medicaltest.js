@@ -1,4 +1,3 @@
-import {sendOrderInProgressMessage} from '../whatsapp/messages.js'
 export async function newMedicalTest(dataForm,datos,db, admin) {
     try {
       const testId = db.collection("medicalTest").doc().id; // Generar el UID del test
@@ -14,13 +13,7 @@ export async function newMedicalTest(dataForm,datos,db, admin) {
       }
       
       if (newMedicalTest.phone) {
-        sendOrderInProgressMessage(
-          newMedicalTest.patient,
-          newMedicalTest.phone,
-          `Hola ${newMedicalTest.patient} los resultados de tus estudios estan listos`,
-          `Omaka`,
-          
-        );
+       
       }
       return({ status: "OK", newMedicalTest});
     } catch (error) {
@@ -32,7 +25,9 @@ export async function newMedicalTest(dataForm,datos,db, admin) {
   export async function findMedicalTest(data,db){
     try{
       const querySnapshot = await db.collection('medicalTest') // Reemplaza 'tuColeccion' con el nombre real de tu colección
-      .where('orderNumber', '==', data.orderNumber)
+      const stringWOFolio = data.orderNumber.replace("Folio ", "")
+
+      .where('orderNumber', '==', stringWOFolior)
       .get();
 
     if (querySnapshot.empty) {
